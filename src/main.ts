@@ -46,6 +46,12 @@ app.set("views", path.resolve(__dirname, "views"))
 // serve static files
 app.use("/static", express.static(path.resolve(__dirname, "views", "static")))
 
+// Health check
+
+app.get("/_status/healthz", (_, res) => {
+  res.send("OK")
+})
+
 // main router
 app.use("/", IndexRouter)
 

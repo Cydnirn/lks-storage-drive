@@ -14,7 +14,7 @@
     "build:css": "tailwindcss -i ./src/views/static/css/index.css -o ./src/views/static/css/style.css",
     "build": "tsc && npm run build:css && npm run build:static",
     "start:prod": "pm2 start ./dist/main.js",
-    "start": "pm2 start ./dist/main.js"
+    "start": "node ./dist/main.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
