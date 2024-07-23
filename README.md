@@ -14,6 +14,7 @@
 
 - [Kubernetes Configuration](#kubernetes-configuration)
 
+  - [Kube-Config folder](#kube-config-folder)
   - [Environment Variables](#environment-variables)
   - [Database Migrations](#database-migration)
   - [Mounting File System](#mounting-file-system)
@@ -91,6 +92,10 @@ Upload the Docker Image to ECR to be used by Kubernetes Deployments
 ---
 
 ## Kubernetes Configuration
+
+### Kube-config Folder
+
+This folder contains the application namespace and the efs-class to be used as a persistent volume
 
 ### Environment Variables
 
