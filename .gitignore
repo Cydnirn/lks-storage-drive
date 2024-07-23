@@ -4,6 +4,9 @@
 ## App ##
 storage/
 
+## Kubernetes ##
+kubernetes/
+
 ### Node ###
 # Logs
 logs

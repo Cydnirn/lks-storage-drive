@@ -10,15 +10,13 @@
 
   - [Setup Environment Variables](#setup-environment-variables)
   - [Build App](#build-app)
-  - [Bundle App](#bundle-app)
+  - [Build Dockerfile](#build-dockerfile)
 
-- [Elastic Beanstalk Configuration](#elastic-beanstalk-configuration)
+- [Kubernetes Configuration](#kubernetes-configuration)
 
   - [Environment Variables](#environment-variables)
   - [Database Migrations](#database-migration)
   - [Mounting File System](#mounting-file-system)
-  - [Adjust Nginx Configuration](#adjust-nginx-configuration)
-  - [Procfile](#procfile)
 
 ---
 
@@ -64,24 +62,15 @@ yarn run build
 
 The code that has been built will be available in the `dist/` directory.
 
-### Bundle App
+### Build Dockerfile
 
-File and folder need to be included:
+Build Dockerfile by using the following command
 
-1. `dist/` folder
-2. `package.json`
-3. `package-lock.json` or `yarn.lock`
-4. `.sequelizerc`
-5. `.env`
-6. `Procfile`
-
-
-Bundle your application to zip file with following command:
-
-
-```sh
-zip -r storageapp.zip dist/ package.json yarn.lock .sequelizerc .env Procfile
+```bash
+docker build -t citrus-file:latest .
 ```
+
+Upload the Docker Image to ECR to be used by Kubernetes Deployments
 
 ### Start application locally
 
@@ -101,29 +90,36 @@ zip -r storageapp.zip dist/ package.json yarn.lock .sequelizerc .env Procfile
 
 ---
 
-## Elastic Beanstalk Configuration
+## Kubernetes Configuration
 
 ### Environment Variables
 
-Since the application will be deploy in Elastic Beanstalk, you need to set all environment variables using option settings inside `node-env.config` located in `.ebextensions/` directory.
+Since the application will be deploy using Kubernetes, you need to set all configuration options as a configMap and store all confidential environment as Secrets
+
+All confidential data must be encoded to base64 first
 
 Example:
 
-```yaml
-option_settings:
-  - option_name: ENV_KEY
-    value: ENV_VALUE
+```bash
+echo -n 'Hello, World!' | base64
+SGVsbG8sIFdvcmxkIQ==
 ```
 
 ### Database Migrations
 
 > **Note** </br>
-> The command must be executed using prebuild hook script
+> The command must be executed before deploying to EKS Cluster
 
 Perform migration to create required tables in database with following command:
 
 ```
 npm run db:migrate
+```
+
+or
+
+```
+yarn run db:migrate
 ```
 
 The migration script depends on the following environment variables:
@@ -139,26 +135,6 @@ DB_PASSWORD=
 
 ### Mounting File System
 
-Complete the script in the `.ebextensions/hooks/postdeploy/90_setup_efs.sh` folder to mount EFS.
+The file system will be mounted as a PersistentVolume to the Kubernetes pods
 
-The script should depends on the following environment variables:
-
-```
-FILE_SYSTEM_ID=
-STORAGE_PATH=
-```
-
-### Adjust Nginx Configuration
-
-Adjust the application port in the `./.ebextensions/nginx/conf.d/00_application.conf` at the following line:
-
-```conf
-    proxy_pass http://127.0.0.1:<port>;
-```
-
-> For production stage, you need to change main nginx configuration at `./.ebextensions/nginx/nginx.conf` to enable HTTPS. SSL certificate can be found at `./src/cert/nginx-selfsigned.crt` and SSL certificate key can be found at `./src/cert/nginx-selfsigned.key`.
-
-### Procfile
-
-Create and configure `Procfile` in the root directory to ensure Elastic Beanstalk run the application properly.
 

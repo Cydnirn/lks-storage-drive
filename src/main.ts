@@ -1,8 +1,6 @@
 import cookieParser from "cookie-parser"
 import express from "express"
-import fs from "fs"
 import helmet from "helmet"
-import https from "https"
 import { expressExtend } from "jsxte"
 import path from "path"
 import { connect } from "./config/sequelize"
@@ -64,20 +62,9 @@ app.use(NotFoundRouter)
 if (envConfig.nodeEnv === "prod" || envConfig.nodeEnv === "production") {
   console.log("Starting Production Server...")
   try {
-    const prod = https.createServer(
-      {
-        key: fs.readFileSync(path.join(__dirname, "cert", "key.pem"), "utf8"),
-        cert: fs.readFileSync(
-          path.join(__dirname, "cert", "server.crt"),
-          "utf8"
-        ),
-      },
-      app
-    )
-
-    prod.listen(envConfig.port, () => {
+    app.listen(envConfig.port, () => {
       console.log(
-        `Server started: https://${envConfig.appUrl}:${envConfig.port}/`
+        `Server started: http://${envConfig.appUrl}:${envConfig.port}/`
       )
     })
   } catch (err) {
