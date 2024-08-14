@@ -12,12 +12,10 @@
   - [Build App](#build-app)
   - [Build Dockerfile](#build-dockerfile)
 
-- [Kubernetes Configuration](#kubernetes-configuration)
+- [ECS Configuration](#ECS-configuration)
 
-  - [Kube-Config folder](#kube-config-folder)
   - [Environment Variables](#environment-variables)
   - [Database Migrations](#database-migration)
-  - [Mounting File System](#mounting-file-system)
 
 ---
 
@@ -91,24 +89,12 @@ Upload the Docker Image to ECR to be used by Kubernetes Deployments
 
 ---
 
-## Kubernetes Configuration
+## ECS Configuration
 
-### Kube-config Folder
-
-This folder contains the application namespace and the efs-class to be used as a persistent volume
 
 ### Environment Variables
 
-Since the application will be deploy using Kubernetes, you need to set all configuration options as a configMap and store all confidential environment as Secrets
-
-All confidential data must be encoded to base64 first
-
-Example:
-
-```bash
-echo -n 'Hello, World!' | base64
-SGVsbG8sIFdvcmxkIQ==
-```
+Since the application will be deploy using AWS ECS, you need to set all configuration options to AWS Parameter store and store all confidential environment as Secrets
 
 ### Database Migrations
 
@@ -137,9 +123,5 @@ DB_NAME=
 DB_USERNAME=
 DB_PASSWORD=
 ```
-
-### Mounting File System
-
-The file system will be mounted as a PersistentVolume to the Kubernetes pods
 
 
